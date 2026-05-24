@@ -1,0 +1,116 @@
+---
+---
+
+<section id="contact">
+  <div class="container">
+    <div class="contact-card card">
+      <div class="contact-left">
+        <h2 class="section-title">CONTACT <span>US</span></h2>
+        <p class="contact-desc">
+          We're here to help! If you have any questions, suggestions, or comments about the AI@UCF, please feel free to reach out to us using the contact form to the left. Our team is dedicated to provided the best experience for our members, and we value your feedback.
+        </p>
+      </div>
+
+      <div class="contact-right">
+        <div class="form-group">
+          <input type="email" placeholder="Email*" class="form-input" />
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Subject" class="form-input" />
+        </div>
+        <div class="form-group">
+          <textarea placeholder="Message" class="form-input form-textarea" rows="5"></textarea>
+        </div>
+        <button class="btn btn-gold send-btn" id="sendBtn">SEND</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #contact {
+    padding: 4rem 0;
+  }
+
+  .contact-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding: 3rem;
+    border: 1px solid var(--border);
+    background: rgba(25, 25, 25, 0.85);
+    max-width: 860px;
+    margin: 0 auto;
+    border-radius: 20px;
+  }
+
+  @media (max-width: 640px) {
+    .contact-card {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  .contact-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-top: 1.5rem;
+  }
+
+  .contact-right {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .form-group {
+    width: 100%;
+  }
+
+  .form-input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-input::placeholder { color: #666; }
+  .form-input:focus { border-color: var(--gold); }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  .send-btn {
+    align-self: stretch;
+    padding: 0.85rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    border-radius: 6px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .send-btn:active { transform: scale(0.98); }
+</style>
+
+<script>
+  document.getElementById("sendBtn")?.addEventListener("click", () => {
+    const inputs = document.querySelectorAll(".form-input");
+    let valid = true;
+    inputs.forEach(input => {
+      if (!input.value.trim()) { valid = false; input.style.borderColor = "#e74c3c"; }
+      else { input.style.borderColor = "#333"; }
+    });
+    if (valid) {
+      alert("Message sent! We'll get back to you soon.");
+      inputs.forEach(input => input.value = "");
+    }
+  });
+</script>

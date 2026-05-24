@@ -1,23 +1,398 @@
-<!doctype html>
+---
+export interface Props {
+  title?: string;
+}
+const { title = "AI@UCF" } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style is:global>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+    :root {
+      --gold: #f0b429;
+      --gold-light: #ffd166;
+      --dark: #0e0e0e;
+      --dark-2: #141414;
+      --dark-card: #1a1a1a;
+      --dark-card-2: #222222;
+      --border: rgba(240, 180, 41, 0.35);
+      --text: #ffffff;
+      --text-muted: #aaaaaa;
+      --font-display: 'Archivo Black', sans-serif;
+      --font-condensed: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-snap-type: y mandatory;
+    }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    #particles-js {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    section {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      width: 100%;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: transparent;
+    }
+
+    .nav-links {
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .nav-links.hidden {
+      opacity: 0;
+      transform: translateY(-6px);
+      pointer-events: none;
+    }
+
+    .nav-logo {
+      width: 40px;
+      height: 40px;
+    }
+    .nav-logo svg { width: 100%; height: 100%; }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links > li { position: relative; }
+
+    .nav-links a, .nav-links button {
+      color: var(--text);
+      text-decoration: none;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .nav-links a:hover,
+    .nav-links button:hover { color: var(--gold); }
+
+    /* Home active/highlight */
+    .nav-links a.nav-home {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* Dropdown */
+    .nav-dropdown {
+      position: absolute;
+      top: calc(100% + 0.75rem);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1c1c1c;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      min-width: 180px;
+      padding: 0.5rem 0;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(-6px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 200;
+    }
+
+    .nav-dropdown.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .nav-dropdown a {
+      display: block;
+      padding: 0.6rem 1.2rem;
+      color: var(--text);
+      font-size: 0.875rem;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+      font-family: var(--font-body);
+    }
+    .nav-dropdown a:hover {
+      background: rgba(240,180,41,0.1);
+      color: var(--gold);
+    }
+
+    /* Dropdown arrow icon */
+    .dropdown-arrow {
+      width: 14px; height: 14px;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .dropdown-btn.open .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .discord-icon {
+      color: var(--text);
+      transition: color 0.2s;
+    }
+    .discord-icon:hover { color: #7289da; }
+
+    /* Scrolldown arrow */
+    .scroll-down {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--gold);
+      animation: bounce 2s infinite;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--dark-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      position: relative;
+    }
+    .card-gold-border { border-left: 3px solid var(--gold); }
+
+    /* Tags */
+    .tag {
+      display: inline-block;
+      background: var(--gold);
+      color: #000;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-family: var(--font-body);
+    }
+    .tag.dark { background: #2a2a2a; color: var(--text); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-family: var(--font-body);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #444;
+      color: var(--text);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-gold { background: var(--gold); color: #000; }
+    .btn-gold:hover { background: var(--gold-light); }
+
+    /* Section headings */
+    .section-title {
+      font-family: var(--font-condensed);
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .section-title span { color: var(--gold); }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <!-- NAVBAR -->
+  <nav id="main-nav">
+    <a href="#hero" class="nav-logo">
+      <img src={`${base}logoia.png`} alt="AI@UCF Logo" width="40" height="40" style="display:block;" />
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#board">Board</a></li>
+
+      <!-- Projects dropdown -->
+      <li>
+        <button class="dropdown-btn" id="projectsBtn" aria-expanded="false">
+          Projects
+          <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="nav-dropdown" id="projectsDropdown">
+          <a href="#projects">All Projects</a>
+          <a href="#projects">AI DEV</a>
+          <a href="#projects">FPL Optimizer</a>
+          <a href="#projects">Location Finder</a>
+        </div>
+      </li>
+
+      <li><a href="#hero" class="nav-home">Home</a></li>
+
+      <!-- Events dropdown -->
+      <li>
+        <button class="dropdown-btn" id="eventsBtn" aria-expanded="false">
+          Events
+          <svg class="dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="nav-dropdown" id="eventsDropdown">
+          <a href="#events">Upcoming Event</a>
+          <a href="#events">Past Events</a>
+        </div>
+      </li>
+
+      <li><a href="#contact">Contact Us</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <a href="https://discord.gg" target="_blank" class="discord-icon" aria-label="Discord">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+        </svg>
+      </a>
+    </div>
+  </nav>
+
+  <main>
+    <slot />
+  </main>
+
+  <script is:inline src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script is:inline src={`${base}js/particles-config.js`}></script>
+
+  <script is:inline>
+    // ── NAVBAR HIDE ON SCROLL — only links, logo+discord stay ──
+    const navLinks = document.querySelector('.nav-links');
+    let ticking = false;
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          if (window.scrollY > 80) {
+            navLinks.classList.add('hidden');
+          } else {
+            navLinks.classList.remove('hidden');
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+
+    // Re-show on mouse near top
+    document.addEventListener('mousemove', (e) => {
+      if (e.clientY < 80) navLinks.classList.remove('hidden');
+    });
+
+    // ── DROPDOWNS ──
+    function setupDropdown(btnId, dropdownId) {
+      const btn = document.getElementById(btnId);
+      const dropdown = document.getElementById(dropdownId);
+      if (!btn || !dropdown) return;
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.contains('open');
+        // close all dropdowns
+        document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+        document.querySelectorAll('.dropdown-btn').forEach(b => { b.classList.remove('open'); b.setAttribute('aria-expanded','false'); });
+        if (!isOpen) {
+          dropdown.classList.add('open');
+          btn.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    }
+
+    setupDropdown('projectsBtn', 'projectsDropdown');
+    setupDropdown('eventsBtn', 'eventsDropdown');
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.dropdown-btn').forEach(b => { b.classList.remove('open'); b.setAttribute('aria-expanded','false'); });
+    });
+  </script>
+</body>
+</html>
